@@ -1,0 +1,12 @@
+{
+  "name": "first_program",
+  "version": "1.0.0",
+  "description": "This is my first try of backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "codingBySahil",
+  "license": "ISC"
+}
