@@ -38,4 +38,27 @@ let app = express();
 app.get("/",(req,res)=>{
   res.send("Hello express as a first use")
 });
+let newsData = {
+    status: 200,
+    data: [
+      {
+        id: 1,
+        title: "News 1",
+        description: "News one description",
+      },
+      {
+        id: 2,
+        title: "News 2",
+        description: "News two description",
+      },
+      {
+        id: 3,
+        title: "News 3",
+        description: "News three description",
+      },
+    ],
+  };
+app.get("/news",(req,res)=>{
+  res.send(newsData)
+});
 app.listen("8000");
