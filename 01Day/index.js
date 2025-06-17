@@ -35,7 +35,7 @@ const express = require("express");
 const { checkPassword, checkToken } = require("./checkTokenMiddleware");
 const app = express();
 
-require('dotenv').config();
+require("dotenv").config();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -54,7 +54,6 @@ const newsData = {
     { id: 3, title: "News 3", description: "News three description" },
   ],
 };
-
 
 // GET: send news data
 app.get("/news", checkPassword, checkToken, (req, res) => {
