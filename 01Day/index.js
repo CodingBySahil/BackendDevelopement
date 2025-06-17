@@ -34,6 +34,8 @@
 const express = require("express");
 const app = express();
 
+require('dotenv').config();
+
 // Middleware to parse JSON bodies
 app.use(express.json());
 
@@ -53,17 +55,14 @@ const newsData = {
 };
 
 // middleware for password and token checking
-let myToken = "t12345";
-let myPass = "12345";
 let checkToken = (req, res, next) => {
-  console.log(req.query.token);
   if (req.query.token == "" || req.query.token == undefined) {
     return res.send({
       status: 404,
       msg: "plz provide the token",
     });
   }
-  if (req.query.token != myToken) {
+  if (req.query.token != process.env.myToken) {
     return res.send({
       status: 404,
       msg: "plz provide the correct token",
@@ -80,7 +79,7 @@ app.use((req, res, next) => {
       msg: "plz provide the password",
     });
   }
-  if (req.query.password !== myPass) {
+  if (req.query.password !== process.env.myPassword) {
     return res.send({
       status: 404,
       msg: "plz provide the correct password",
@@ -115,6 +114,6 @@ app.post("/param/:id", (req, res) => {
 });
 
 // Start server
-app.listen(8000, () => {
-  console.log("Server is running on port 8000");
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
