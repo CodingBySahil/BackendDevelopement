@@ -52,12 +52,48 @@ const newsData = {
   ],
 };
 
+// middleware for password and token checking
+let myToken = "t12345";
+let myPass = "12345";
+let checkToken = (req, res, next) => {
+  console.log(req.query.token);
+  if (req.query.token == "" || req.query.token == undefined) {
+    return res.send({
+      status: 404,
+      msg: "plz provide the token",
+    });
+  }
+  if (req.query.token != myToken) {
+    return res.send({
+      status: 404,
+      msg: "plz provide the correct token",
+    });
+  }
+  next();
+};
+app.use(checkToken);
+// middle ware for password checking
+app.use((req, res, next) => {
+  if (req.query.password == "" || req.query.password == undefined) {
+    return res.send({
+      status: 404,
+      msg: "plz provide the password",
+    });
+  }
+  if (req.query.password !== myPass) {
+    return res.send({
+      status: 404,
+      msg: "plz provide the correct password",
+    });
+  }
+  next();
+});
 // GET: send news data
 app.get("/news", (req, res) => {
   res.send(newsData);
 });
 
-// POST: receive query data 
+// POST: receive query data
 app.post("/querydata", (req, res) => {
   const userData = req.query;
   console.log("Query data:", userData);
@@ -71,7 +107,7 @@ app.post("/bodydata", (req, res) => {
   res.send({ status: 201, msg: "User data from body", user: userData });
 });
 
-// POST: receive data from route param 
+// POST: receive data from route param
 app.post("/param/:id", (req, res) => {
   const ID = req.params.id;
   console.log("Param ID:", ID);
