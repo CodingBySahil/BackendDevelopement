@@ -15,11 +15,11 @@ connectToDB().then((database) => {
     res.json(data);
   });
 
-  app.get("/insert_data", async (req, res) => {
+  app.post("/insert_data", async (req, res) => {
     const { SName, SPhone } = req.body;
     // res.send({ SName, SPhone });
     const result = await db.collection("students").insertOne({ SName, SPhone });
-    res.send("Inserted: " + JSON.stringify(result.insertedId));
+    res.send("Inserted: " + JSON.stringify(result));
   });
 
   app.get("/", (req, res) => {
