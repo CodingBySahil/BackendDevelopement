@@ -40,7 +40,7 @@ app.post("/api/enquiryinsert", async (req, res) => {
       email: email,
       phone: phone,
     });
-    // await userEnquiry.save();
+    
     res.send("Enquiry Inserted Successfully");
 
     res.status(201).json({ message: "Enquiry inserted successfully" });
