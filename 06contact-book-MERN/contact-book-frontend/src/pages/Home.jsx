@@ -1,16 +1,24 @@
+import Navbar from '../components/Navbar';
+import ContactForm from '../components/ContactForm';
+import ContactList from '../components/ContactList';
+import { useState } from 'react';
 
-import Navbar from '../components/Navbar'
-import ContactForm from '../components/ContactForm'
-import ContactList from '../components/ContactList'
+const Home = () => {
+  const [reload, setReload] = useState(0);
 
-const HomePage = () => {
+  const triggerReload = () => {
+    setReload(prev => prev + 1);
+  };
+
   return (
-    <div className="p-4 max-w-3xl mx-auto">
+    <div>
       <Navbar />
-      <ContactForm />
-      <ContactList />
+      <div className="max-w-3xl mx-auto px-4 mt-6">
+        <ContactForm onAdd={triggerReload} />
+        <ContactList reload={reload} />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default Home;

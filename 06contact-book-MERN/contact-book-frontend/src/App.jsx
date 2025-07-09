@@ -1,12 +1,11 @@
+import Home from './pages/Home';
 
-import HomePage from './pages/Home'
-
-const App = () => {
+function App() {
   return (
-    <div>
-      <HomePage />
+    <div className="bg-gray-100 min-h-screen">
+      <Home />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
