@@ -11,7 +11,7 @@ const {
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send("Base API : http://localhost:8020//api/contact");
 });
 
 // upload/post a single contact
