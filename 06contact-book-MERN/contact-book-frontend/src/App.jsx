@@ -1,9 +1,10 @@
-import React from 'react'
+
+import HomePage from './pages/Home'
 
 const App = () => {
   return (
-    <div className='min-h-screen bg-red-900 flex items-center justify-center'>
-      App
+    <div>
+      <HomePage />
     </div>
   )
 }
