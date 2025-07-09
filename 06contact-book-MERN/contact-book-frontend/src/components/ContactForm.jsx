@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../services/Api";
+import toast from "react-hot-toast";
+import { FiSave, FiXCircle } from "react-icons/fi";
 
-const ContactForm = ({ onAdd }) => {
+const ContactForm = ({ onSave, editData, clearEdit }) => {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -9,30 +11,46 @@ const ContactForm = ({ onAdd }) => {
     message: "",
   });
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  useEffect(() => {
+    if (editData) setForm(editData);
+  }, [editData]);
+
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const t = toast.loading("Saving...");
     try {
-      await api.post("/upload", form);
-      onAdd(); // trigger reload
+      if (editData) {
+        await api.put(`/update_contact/${editData._id}`, form);
+        toast.success("Contact updated", { id: t });
+        clearEdit();
+      } else {
+        await api.post("/upload", form);
+        toast.success("Contact added", { id: t });
+      }
       setForm({ name: "", email: "", phone: "", message: "" });
-    } catch (err) {
-      console.error("Error adding contact:", err);
+      onSave();
+    } catch {
+      toast.error("Save failed", { id: t });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 shadow rounded mb-6">
-      <h2 className="text-xl font-semibold mb-4">Add Contact</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-6 shadow rounded-lg mb-6"
+    >
+      <h2 className="text-xl font-semibold mb-4">
+        {editData ? "Edit Contact" : "Add New Contact"}
+      </h2>
       <input
         name="name"
         placeholder="Name"
         value={form.name}
         onChange={handleChange}
-        className="w-full border p-2 mb-2 rounded"
+        className="w-full border p-3 mb-3 rounded"
         required
       />
       <input
@@ -41,7 +59,7 @@ const ContactForm = ({ onAdd }) => {
         placeholder="Email"
         value={form.email}
         onChange={handleChange}
-        className="w-full border p-2 mb-2 rounded"
+        className="w-full border p-3 mb-3 rounded"
         required
       />
       <input
@@ -49,7 +67,7 @@ const ContactForm = ({ onAdd }) => {
         placeholder="Phone"
         value={form.phone}
         onChange={handleChange}
-        className="w-full border p-2 mb-2 rounded"
+        className="w-full border p-3 mb-3 rounded"
         required
       />
       <textarea
@@ -57,15 +75,29 @@ const ContactForm = ({ onAdd }) => {
         placeholder="Message"
         value={form.message}
         onChange={handleChange}
-        className="w-full border p-2 mb-2 rounded"
+        className="w-full border p-3 mb-3 rounded"
         required
       />
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Submit
-      </button>
+
+      <div className="flex space-x-2">
+        <button
+          type="submit"
+          className="flex items-center bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          <FiSave className="mr-2" />
+          {editData ? "Update" : "Save"}
+        </button>
+        {editData && (
+          <button
+            type="button"
+            onClick={clearEdit}
+            className="flex items-center bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >
+            <FiXCircle className="mr-2" />
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   );
 };
