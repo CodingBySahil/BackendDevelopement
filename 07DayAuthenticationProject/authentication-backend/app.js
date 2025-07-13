@@ -8,12 +8,7 @@ app.use(cookieParser());
 
 const cors = require("cors");
 
-app.use(
-  cors({
-    origin: "http://localhost:3000", // or your frontend URL
-    credentials: true, // allow cookies to be sent
-  })
-);
+app.use(cors());
 connectDB();
 
 app.use(express.json());
