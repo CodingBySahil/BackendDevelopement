@@ -8,7 +8,10 @@ app.use(cookieParser());
 
 const cors = require("cors");
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // Vite dev URL
+  credentials: true
+}));
 connectDB();
 
 app.use(express.json());
