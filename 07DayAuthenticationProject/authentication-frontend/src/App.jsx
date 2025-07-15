@@ -1,16 +1,17 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Register from './components/Register';
-import Login from './components/Login';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Suspense } from "react";
+import routes from "./routes"; // from routes.jsx
 
-const App = () => {
-  return (
-    <BrowserRouter>
+const App = () => (
+  <BrowserRouter>
+    <Suspense fallback={<div className="text-center p-6">Loading...</div>}>
       <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        {routes.map(({ path, element }, index) => (
+          <Route key={index} path={path} element={element} />
+        ))}
       </Routes>
-    </BrowserRouter>
-  )
-}
+    </Suspense>
+  </BrowserRouter>
+);
 
-export default App
+export default App;
