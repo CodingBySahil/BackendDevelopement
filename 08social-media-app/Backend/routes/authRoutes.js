@@ -89,7 +89,12 @@ router.post("/logout", (req, res) => {
 
 // ✅ Get logged-in user
 router.get("/me", protect, async (req, res) => {
-  res.json(req.user);
+  const user = await User.findById(req.user._id)
+    .populate("posts")
+    .populate("likedPosts")
+    .populate("sharedPosts");
+
+  res.json(user);
 });
 
 // ✅ Update Profile (bio, address, profilePic)
@@ -105,7 +110,10 @@ router.put(
 
       const user = await User.findByIdAndUpdate(req.user._id, updatedData, {
         new: true,
-      });
+      })
+        .populate("posts")
+        .populate("likedPosts")
+        .populate("sharedPosts");
 
       res.json(user);
     } catch (error) {
