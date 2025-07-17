@@ -80,4 +80,57 @@ router.post("/:id/share", protect, async (req, res) => {
   }
 });
 
+// ✅ EDIT POST
+router.put("/:id", protect, upload.single("media"), async (req, res) => {
+  const { content } = req.body;
+  const mediaFile = req.file;
+
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Only author can edit
+    if (post.author.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to edit this post" });
+    }
+
+    // Update fields
+    post.content = content || post.content;
+    if (mediaFile) {
+      post.media = mediaFile.filename;
+      post.mediaType = mediaFile.mimetype.startsWith("video")
+        ? "video"
+        : "image";
+    }
+
+    const updated = await post.save();
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// ✅ DELETE POST
+router.delete("/:id", protect, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Only author can delete
+    if (post.author.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this post" });
+    }
+    // if post delete all comments related should be deleted auto
+    await Comment.deleteMany({ post: post._id });
+    await post.deleteOne();
+    res.json({ message: "Post deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
