@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 dotenv.config();
 const app = express();
@@ -11,6 +12,10 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+// ✅ Serve uploaded files
+app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
+
+
 app.use(
   cors({
     origin: "http://localhost:5173", // your frontend URL
