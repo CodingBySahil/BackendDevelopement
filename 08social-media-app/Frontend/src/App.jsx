@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
+import axiosInstance from "./api/axiosInstance";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Feed from "./pages/Feed";
 import CreatePost from "./pages/CreatePost";
@@ -9,6 +10,26 @@ import Register from "./pages/Register";
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axiosInstance.get("/auth/me");
+        setUser(res.data);
+      } catch (err) {
+        setUser(null);
+        console.log(err)
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return <p className="text-center mt-20 text-gray-500">Loading...</p>;
+  }
 
   return (
     <Router>
