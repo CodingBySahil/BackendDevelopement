@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axiosInstance from "../api/axiosInstance";
-import { FaCommentDots } from "react-icons/fa";
+import { FaCommentDots, FaFemale, FaMale } from "react-icons/fa";
 
 export default function CommentSection({ post, fetchPosts }) {
   const [comment, setComment] = useState("");
@@ -23,9 +23,17 @@ export default function CommentSection({ post, fetchPosts }) {
             className="flex items-start gap-2 bg-gray-50 p-2 rounded-lg hover:bg-gray-100 transition"
           >
             {/* ✅ Avatar */}
-            <div className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold uppercase">
-              {c.author.username[0]}
-            </div>
+            {c.author.profilePic ? (
+              <img
+                src={`http://localhost:5000${c.author.profilePic}`}
+                alt="Profile"
+                className="w-9 h-9 rounded-full object-cover border"
+              />
+            ) : c.author.gender === "Female" ? (
+              <FaFemale className="w-8 h-8 text-pink-500" />
+            ) : (
+              <FaMale className="w-8 h-8 text-blue-500" />
+            )}
 
             {/* ✅ Comment Content */}
             <div className="flex-1">

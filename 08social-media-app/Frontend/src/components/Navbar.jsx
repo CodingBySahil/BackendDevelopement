@@ -3,10 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 import {
   FaHome,
-  FaUserCircle,
   FaSignOutAlt,
   FaBars,
   FaTimes,
+  FaUserCircle,
+  FaFemale,
+  FaMale,
 } from "react-icons/fa";
 
 export default function Navbar({ user, setUser }) {
@@ -19,8 +21,23 @@ export default function Navbar({ user, setUser }) {
     navigate("/login");
   };
 
-  const goToProfile = () => {
-    navigate("/profile");
+  const goToProfile = () => navigate("/profile");
+
+  const renderProfileIcon = () => {
+    if (user.profilePic) {
+      return (
+        <img
+          src={`http://localhost:5000${user.profilePic}`}
+          alt="Profile"
+          className="w-9 h-9 rounded-full object-cover border"
+        />
+      );
+    }
+    return user.gender === "Female" ? (
+      <FaFemale className="w-8 h-8 text-pink-500" />
+    ) : (
+      <FaMale className="w-8 h-8 text-blue-500" />
+    );
   };
 
   return (
@@ -49,9 +66,9 @@ export default function Navbar({ user, setUser }) {
           <div className="hidden md:flex items-center gap-3">
             <div
               onClick={goToProfile}
-              className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold uppercase cursor-pointer hover:opacity-90"
+              className="cursor-pointer hover:opacity-90"
             >
-              {user.username[0]}
+              {renderProfileIcon()}
             </div>
             <span
               onClick={goToProfile}
@@ -96,7 +113,7 @@ export default function Navbar({ user, setUser }) {
                 }}
                 className="flex items-center gap-2 cursor-pointer text-gray-700 hover:text-blue-600"
               >
-                <FaUserCircle /> {user.username}
+                {renderProfileIcon()} {user.username}
               </div>
               <button
                 onClick={() => {

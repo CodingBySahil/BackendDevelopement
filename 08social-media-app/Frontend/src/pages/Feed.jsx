@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import PostCard from "../components/PostCard";
-import { FaImage, FaVideo, FaSmile } from "react-icons/fa";
+import { FaImage, FaVideo, FaSmile, FaFemale, FaMale } from "react-icons/fa";
 
 export default function Feed({ user }) {
   const [posts, setPosts] = useState([]);
@@ -19,7 +19,8 @@ export default function Feed({ user }) {
 
   const handlePostSubmit = async (e) => {
     e.preventDefault();
-    if (!content.trim() && !media) return alert("Write something or add media!");
+    if (!content.trim() && !media)
+      return alert("Write something or add media!");
 
     const formData = new FormData();
     formData.append("content", content);
@@ -39,9 +40,18 @@ export default function Feed({ user }) {
       {/* ✅ Create Post Box */}
       <div className="bg-white shadow-md rounded-lg p-4 mb-6">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold uppercase">
-            {user.username[0]}
-          </div>
+          {user.profilePic ? (
+            <img
+              src={`http://localhost:5000${user.profilePic}`}
+              alt="Profile"
+              className="w-10 h-10 rounded-full object-cover border"
+            />
+          ) : user.gender === "Female" ? (
+            <FaFemale className="w-9 h-9 text-pink-500" />
+          ) : (
+            <FaMale className="w-9 h-9 text-blue-500" />
+          )}
+
           <form onSubmit={handlePostSubmit} className="flex-1">
             <textarea
               value={content}
