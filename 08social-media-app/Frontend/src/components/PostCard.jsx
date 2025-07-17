@@ -1,40 +1,39 @@
 import axiosInstance from "../api/axiosInstance";
 import CommentSection from "./CommentSection";
-import { useState } from "react";
+import { FaHeart, FaShare } from "react-icons/fa";
 
 export default function PostCard({ post, fetchPosts, user }) {
-  const [loadingLike, setLoadingLike] = useState(false);
-
   const handleLike = async () => {
-    try {
-      setLoadingLike(true);
-      await axiosInstance.put(`/posts/${post._id}/like`);
-      fetchPosts();
-    } finally {
-      setLoadingLike(false);
-    }
+    await axiosInstance.put(`/posts/${post._id}/like`);
+    fetchPosts();
+  };
+
+  const handleShare = async () => {
+    await axiosInstance.post(`/posts/${post._id}/share`);
+    fetchPosts();
   };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4 mb-6">
-      {/* Author Info */}
+      {/* Author */}
       <div className="flex items-center gap-3 mb-3">
-        {/* Avatar (First Letter of Username) */}
         <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold uppercase">
           {post.author.username[0]}
         </div>
         <div>
-          <h4 className="font-semibold text-gray-800">{post.author.username}</h4>
+          <h4 className="font-semibold text-gray-800">
+            {post.author.username}
+          </h4>
           <p className="text-xs text-gray-400">
             {new Date(post.createdAt).toLocaleString()}
           </p>
         </div>
       </div>
 
-      {/* Post Content */}
+      {/* Content */}
       <p className="text-gray-800 text-sm mb-3">{post.content}</p>
 
-      {/* Post Media */}
+      {/* Media */}
       {post.media && (
         <div className="mb-3">
           {post.mediaType === "video" ? (
@@ -53,8 +52,8 @@ export default function PostCard({ post, fetchPosts, user }) {
         </div>
       )}
 
-      {/* Post Actions */}
-      <div className="flex items-center gap-4 mb-3">
+      {/* Actions */}
+      <div className="flex items-center gap-6 mb-3">
         <button
           onClick={handleLike}
           className={`flex items-center gap-1 text-sm ${
@@ -63,15 +62,17 @@ export default function PostCard({ post, fetchPosts, user }) {
               : "text-gray-600 hover:text-red-500"
           }`}
         >
-          ❤️ {loadingLike ? "..." : post.likes.length}
+          <FaHeart /> {post.likes.length}
         </button>
-
-        <div className="text-sm text-gray-600">
-          🔄 {post.shares} shares
-        </div>
+        <button
+          onClick={handleShare}
+          className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-500"
+        >
+          <FaShare /> {post.shares}
+        </button>
       </div>
 
-      {/* Comments Section */}
+      {/* Comments */}
       <CommentSection post={post} fetchPosts={fetchPosts} />
     </div>
   );
