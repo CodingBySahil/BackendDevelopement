@@ -1,9 +1,11 @@
 import { useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { useNavigate, Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Register({ setUser }) {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -13,46 +15,63 @@ export default function Register({ setUser }) {
       setUser(res.data);
       navigate("/");
     } catch (err) {
-      alert(err.response?.data?.message || "Error");
+      alert(err.response?.data?.message || "Registration failed.");
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-24 p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-xl font-bold text-center text-gray-700 mb-4">
-        Register
-      </h2>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          placeholder="Username"
-          className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition"
-        >
-          Register
-        </button>
-      </form>
-      <p className="text-center text-sm text-gray-600 mt-3">
-        Already have an account?{" "}
-        <Link to="/login" className="text-blue-500 hover:underline">
-          Login here
-        </Link>
-      </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-white to-blue-100">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
+        <h2 className="text-2xl font-bold text-center text-purple-600 mb-6">
+          Create Your Account 📝
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            placeholder="Username"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            required
+          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition"
+          >
+            Register
+          </button>
+        </form>
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-purple-500 hover:underline font-medium"
+          >
+            Login here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

@@ -1,14 +1,17 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 import {
   FaHome,
-  FaPlusCircle,
   FaUserCircle,
   FaSignOutAlt,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 
 export default function Navbar({ user, setUser }) {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await axiosInstance.post("/auth/logout");
@@ -16,43 +19,44 @@ export default function Navbar({ user, setUser }) {
     navigate("/login");
   };
 
+  const goToProfile = () => {
+    navigate("/profile");
+  };
+
   return (
     <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
-      <div className="max-w-5xl mx-auto flex justify-between items-center px-4 py-3">
+      <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-3">
+        {/* ✅ Logo */}
         <Link
           to="/"
-          className="text-xl font-bold text-blue-600 hover:text-blue-700"
+          className="text-2xl font-bold text-blue-600 hover:text-blue-700"
         >
           FaceClone
         </Link>
 
-        <div className="flex items-center gap-6">
+        {/* ✅ Desktop Menu */}
+        <div className="hidden md:flex items-center gap-6">
           <Link
             to="/"
-            className="flex items-center gap-1 text-gray-700 hover:text-blue-600 text-sm font-medium"
+            className="flex items-center gap-1 text-gray-700 hover:text-blue-600 text-sm font-medium transition"
           >
-            <FaHome /> Feed
-          </Link>
-          <Link
-            to="/create"
-            className="flex items-center gap-1 text-gray-700 hover:text-blue-600 text-sm font-medium"
-          >
-            <FaPlusCircle /> Create
-          </Link>
-          <Link
-            to="/profile"
-            className="flex items-center gap-1 text-gray-700 hover:text-blue-600 text-sm font-medium"
-          >
-            <FaUserCircle /> Profile
+            <FaHome className="text-lg" /> Feed
           </Link>
         </div>
 
+        {/* ✅ User Profile & Logout */}
         {user && (
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold uppercase">
+          <div className="hidden md:flex items-center gap-3">
+            <div
+              onClick={goToProfile}
+              className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold uppercase cursor-pointer hover:opacity-90"
+            >
               {user.username[0]}
             </div>
-            <span className="text-gray-700 text-sm font-medium">
+            <span
+              onClick={goToProfile}
+              className="text-gray-700 text-sm font-medium cursor-pointer hover:text-blue-600"
+            >
               {user.username}
             </span>
             <button
@@ -63,7 +67,50 @@ export default function Navbar({ user, setUser }) {
             </button>
           </div>
         )}
+
+        {/* ✅ Mobile Hamburger */}
+        <button
+          className="md:hidden text-gray-700 text-2xl"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </button>
       </div>
+
+      {/* ✅ Mobile Dropdown Menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200 px-4 py-3 space-y-3">
+          <Link
+            to="/"
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center gap-2 text-gray-700 hover:text-blue-600 text-sm font-medium"
+          >
+            <FaHome /> Feed
+          </Link>
+          {user && (
+            <>
+              <div
+                onClick={() => {
+                  goToProfile();
+                  setMenuOpen(false);
+                }}
+                className="flex items-center gap-2 cursor-pointer text-gray-700 hover:text-blue-600"
+              >
+                <FaUserCircle /> {user.username}
+              </div>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm w-full"
+              >
+                <FaSignOutAlt /> Logout
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 }

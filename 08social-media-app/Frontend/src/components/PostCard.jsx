@@ -1,8 +1,13 @@
+import { useState } from "react";
 import axiosInstance from "../api/axiosInstance";
+import { FaHeart, FaShare, FaCommentDots } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import CommentSection from "./CommentSection";
-import { FaHeart, FaShare } from "react-icons/fa";
 
 export default function PostCard({ post, fetchPosts, user }) {
+  const navigate = useNavigate();
+  const [showComments, setShowComments] = useState(false);
+
   const handleLike = async () => {
     await axiosInstance.put(`/posts/${post._id}/like`);
     fetchPosts();
@@ -13,15 +18,22 @@ export default function PostCard({ post, fetchPosts, user }) {
     fetchPosts();
   };
 
+  const goToProfile = () => {
+    navigate("/profile");
+  };
+
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 mb-6">
-      {/* Author */}
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold uppercase">
+    <div className="bg-white shadow-md rounded-lg overflow-hidden mb-6 border border-gray-200">
+      {/* ✅ Author Section */}
+      <div className="flex items-center gap-3 bg-gray-50 p-4 border-b">
+        <div
+          onClick={goToProfile}
+          className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold uppercase cursor-pointer hover:opacity-90 transition"
+        >
           {post.author.username[0]}
         </div>
-        <div>
-          <h4 className="font-semibold text-gray-800">
+        <div onClick={goToProfile} className="cursor-pointer">
+          <h4 className="font-semibold text-gray-800 hover:text-blue-600">
             {post.author.username}
           </h4>
           <p className="text-xs text-gray-400">
@@ -30,21 +42,27 @@ export default function PostCard({ post, fetchPosts, user }) {
         </div>
       </div>
 
-      {/* Content */}
-      <p className="text-gray-800 text-sm mb-3">{post.content}</p>
+      {/* ✅ Post Content */}
+      {post.content && (
+        <div className="p-4">
+          <p className="text-gray-800 text-sm leading-relaxed">
+            {post.content}
+          </p>
+        </div>
+      )}
 
-      {/* Media */}
+      {/* ✅ Media Section (Fixed Uniform Height) */}
       {post.media && (
-        <div className="mb-3">
+        <div className="bg-black">
           {post.mediaType === "video" ? (
             <video
               controls
-              className="w-full rounded-md max-h-80"
+              className="w-full h-72 object-cover"
               src={`http://localhost:5000/uploads/${post.media}`}
             />
           ) : (
             <img
-              className="w-full rounded-md max-h-80 object-cover"
+              className="w-full h-72 object-cover"
               src={`http://localhost:5000/uploads/${post.media}`}
               alt="Post media"
             />
@@ -52,28 +70,40 @@ export default function PostCard({ post, fetchPosts, user }) {
         </div>
       )}
 
-      {/* Actions */}
-      <div className="flex items-center gap-6 mb-3">
+      {/* ✅ Action Buttons */}
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-50 border-t">
         <button
           onClick={handleLike}
-          className={`flex items-center gap-1 text-sm ${
+          className={`flex items-center gap-2 text-sm font-medium transition ${
             post.likes.includes(user._id)
               ? "text-red-500"
               : "text-gray-600 hover:text-red-500"
           }`}
         >
-          <FaHeart /> {post.likes.length}
+          <FaHeart /> {post.likes.length} Likes
         </button>
+
+        <button
+          onClick={() => setShowComments(!showComments)}
+          className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-500 transition"
+        >
+          <FaCommentDots /> {post.comments.length} Comments
+        </button>
+
         <button
           onClick={handleShare}
-          className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-500"
+          className="flex items-center gap-2 text-sm text-gray-600 hover:text-green-500 transition"
         >
-          <FaShare /> {post.shares}
+          <FaShare /> {post.shares} Shares
         </button>
       </div>
 
-      {/* Comments */}
-      <CommentSection post={post} fetchPosts={fetchPosts} />
+      {/* ✅ Comments - Shown Only When Clicked */}
+      {showComments && (
+        <div className="bg-gray-50 px-4 pb-4">
+          <CommentSection post={post} fetchPosts={fetchPosts} />
+        </div>
+      )}
     </div>
   );
 }
