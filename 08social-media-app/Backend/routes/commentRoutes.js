@@ -39,7 +39,9 @@ router.put("/:id", protect, async (req, res) => {
 
     // Only author can edit
     if (comment.author.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Not authorized to edit this comment" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to edit this comment" });
     }
 
     comment.content = content || comment.content;
@@ -58,7 +60,9 @@ router.delete("/:id", protect, async (req, res) => {
 
     // Only author can delete
     if (comment.author.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Not authorized to delete this comment" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this comment" });
     }
 
     // Remove from post's comments array
@@ -72,6 +76,5 @@ router.delete("/:id", protect, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
 
 module.exports = router;
