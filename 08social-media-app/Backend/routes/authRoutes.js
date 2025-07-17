@@ -77,8 +77,9 @@ router.post("/logout", (req, res) => {
   res.json({ message: "Logged out successfully" });
 });
 
+// ✅ Get logged-in user
 router.get("/me", protect, async (req, res) => {
-  res.json(req.user);
+  res.json(req.user); 
 });
 
 module.exports = router;
