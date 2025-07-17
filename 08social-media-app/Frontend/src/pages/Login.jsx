@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -6,7 +6,21 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 export default function Login({ setUser }) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [welcomeText, setWelcomeText] = useState("");
   const navigate = useNavigate();
+
+  const motivationalTexts = [
+    "Welcome back! We missed you! 👋",
+    "Let's make today awesome together! 🚀",
+    "Your friends are waiting for your updates! 💬",
+    "Ready to explore something amazing? 🌟",
+  ];
+
+  useEffect(() => {
+    setWelcomeText(
+      motivationalTexts[Math.floor(Math.random() * motivationalTexts.length)]
+    );
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,11 +35,14 @@ export default function Login({ setUser }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
-        <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
-          Welcome Back 👋
+      <div className="w-full max-w-md bg-white/70 backdrop-blur-md shadow-lg rounded-2xl p-8 border border-blue-100">
+        <h2 className="text-2xl font-bold text-center text-blue-600">
+          {welcomeText}
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <p className="text-center text-gray-500 text-sm mt-1">
+          Sign in to continue to your world
+        </p>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <input
             type="email"
             placeholder="Email"
@@ -51,7 +68,7 @@ export default function Login({ setUser }) {
           </div>
           <button
             type="submit"
-            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
+            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition"
           >
             Login
           </button>

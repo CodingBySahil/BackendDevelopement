@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -6,7 +6,21 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 export default function Register({ setUser }) {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [welcomeText, setWelcomeText] = useState("");
   const navigate = useNavigate();
+
+  const motivationalTexts = [
+    "Welcome to our community! 🎉",
+    "Let's create something amazing together! ✨",
+    "Your journey starts here! 🚀",
+    "Glad to have you on board! 😊",
+  ];
+
+  useEffect(() => {
+    setWelcomeText(
+      motivationalTexts[Math.floor(Math.random() * motivationalTexts.length)]
+    );
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,11 +35,14 @@ export default function Register({ setUser }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-white to-blue-100">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
-        <h2 className="text-2xl font-bold text-center text-purple-600 mb-6">
-          Create Your Account 📝
+      <div className="w-full max-w-md bg-white/70 backdrop-blur-md shadow-lg rounded-2xl p-8 border border-purple-100">
+        <h2 className="text-2xl font-bold text-center text-purple-600">
+          {welcomeText}
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <p className="text-center text-gray-500 text-sm mt-1">
+          Create your account and start your journey
+        </p>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <input
             placeholder="Username"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
@@ -57,7 +74,7 @@ export default function Register({ setUser }) {
           </div>
           <button
             type="submit"
-            className="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition"
+            className="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-md transition"
           >
             Register
           </button>
