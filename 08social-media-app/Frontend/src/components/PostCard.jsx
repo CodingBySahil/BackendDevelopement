@@ -1,6 +1,12 @@
 import { useState } from "react";
 import axiosInstance from "../api/axiosInstance";
-import { FaHeart, FaShare, FaCommentDots } from "react-icons/fa";
+import {
+  FaHeart,
+  FaShare,
+  FaCommentDots,
+  FaMale,
+  FaFemale,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import CommentSection from "./CommentSection";
 
@@ -22,15 +28,33 @@ export default function PostCard({ post, fetchPosts, user }) {
     navigate("/profile");
   };
 
+  // ✅ Render Profile Avatar (Profile Pic or Gender Icon)
+  const renderAvatar = () => {
+    if (post.author.profilePic) {
+      return (
+        <img
+          src={`http://localhost:5000${post.author.profilePic}`}
+          alt="Profile"
+          className="w-11 h-11 rounded-full object-cover border"
+        />
+      );
+    }
+    return post.author.gender === "Female" ? (
+      <FaFemale className="w-10 h-10 text-pink-500" />
+    ) : (
+      <FaMale className="w-10 h-10 text-blue-500" />
+    );
+  };
+
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden mb-6 border border-gray-200">
       {/* ✅ Author Section */}
       <div className="flex items-center gap-3 bg-gray-50 p-4 border-b">
         <div
           onClick={goToProfile}
-          className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold uppercase cursor-pointer hover:opacity-90 transition"
+          className="cursor-pointer hover:opacity-90 transition"
         >
-          {post.author.username[0]}
+          {renderAvatar()}
         </div>
         <div onClick={goToProfile} className="cursor-pointer">
           <h4 className="font-semibold text-gray-800 hover:text-blue-600">
@@ -57,12 +81,12 @@ export default function PostCard({ post, fetchPosts, user }) {
           {post.mediaType === "video" ? (
             <video
               controls
-              className="w-full h-72 object-cover"
+              className="w-full h-96 object-center"
               src={`http://localhost:5000/uploads/${post.media}`}
             />
           ) : (
             <img
-              className="w-full h-72 object-cover"
+              className="w-full h-96 object-center"
               src={`http://localhost:5000/uploads/${post.media}`}
               alt="Post media"
             />

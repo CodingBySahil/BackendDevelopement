@@ -48,7 +48,7 @@ export default function Navbar({ user, setUser }) {
           to="/"
           className="text-2xl font-bold text-blue-600 hover:text-blue-700"
         >
-          FaceClone
+          Social Media App
         </Link>
 
         {/* ✅ Desktop Menu */}

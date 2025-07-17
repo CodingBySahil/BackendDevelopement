@@ -68,33 +68,50 @@ export default function Profile({ user }) {
 
       {editing && (
         <form onSubmit={handleUpdate} className="mt-4 space-y-3">
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            placeholder="Update bio..."
-            className="w-full border rounded-lg p-2"
-          />
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Update address"
-            className="w-full border rounded-lg p-2"
-          />
-          <select
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            className="w-full border rounded-lg p-2"
-          >
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
-          </select>
-          <input
-            type="file"
-            onChange={(e) => setProfilePic(e.target.files[0])}
-            className="w-full border rounded-lg p-2"
-          />
+          <label className="block text-sm font-medium text-gray-700">
+            Bio:
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Update bio..."
+              className="w-full border rounded-lg p-2 mt-1"
+            />
+          </label>
+
+          <label className="block text-sm font-medium text-gray-700">
+            Address:
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Update address"
+              className="w-full border rounded-lg p-2 mt-1"
+            />
+          </label>
+
+          <label className="block text-sm font-medium text-gray-700">
+            Gender:
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="w-full border rounded-lg p-2 mt-1"
+            >
+              <option disabled>-- Select your gender --</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </label>
+
+          <label className="block text-sm font-medium text-gray-700">
+            Profile Picture:
+            <input
+              type="file"
+              onChange={(e) => setProfilePic(e.target.files[0])}
+              className="w-full border rounded-lg p-2 mt-1"
+            />
+          </label>
+
           <button
             type="submit"
             className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg transition"
