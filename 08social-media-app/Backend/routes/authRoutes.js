@@ -1,6 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { protect } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
@@ -74,6 +75,10 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
   res.clearCookie("token");
   res.json({ message: "Logged out successfully" });
+});
+
+router.get("/me", protect, async (req, res) => {
+  res.json(req.user);
 });
 
 module.exports = router;
