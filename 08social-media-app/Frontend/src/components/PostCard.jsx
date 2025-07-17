@@ -125,7 +125,11 @@ export default function PostCard({ post, fetchPosts, user }) {
       {/* ✅ Comments - Shown Only When Clicked */}
       {showComments && (
         <div className="bg-gray-50 px-4 pb-4">
-          <CommentSection post={post} fetchPosts={fetchPosts} />
+          <CommentSection
+            post={post}
+            fetchPosts={fetchPosts}
+            currentUser={user}
+          />
         </div>
       )}
     </div>
