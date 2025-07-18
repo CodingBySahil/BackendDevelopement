@@ -8,36 +8,91 @@ import {
   FaTrash,
 } from "react-icons/fa";
 
-export default function CommentSection({ post, fetchPosts, currentUser }) {
+export default function CommentSection({ post, currentUser }) {
+  const [comments, setComments] = useState(post.comments);
   const [showInput, setShowInput] = useState(false);
   const [comment, setComment] = useState("");
   const [editCommentId, setEditCommentId] = useState(null);
   const [editContent, setEditContent] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // ✅ Add Comment
+  // ✅ Add Comment (Optimistic)
   const handleComment = async (e) => {
     e.preventDefault();
-    if (!comment.trim()) return;
-    await axiosInstance.post(`/comments/${post._id}`, { content: comment });
+    if (!comment.trim() || loading) return;
+    setLoading(true);
+
+    // Temporary comment for instant UI
+    const tempComment = {
+      _id: Date.now().toString(),
+      content: comment,
+      author: currentUser,
+      createdAt: new Date().toISOString(),
+    };
+    setComments((prev) => [tempComment, ...prev]);
     setComment("");
     setShowInput(false);
-    fetchPosts();
+
+    try {
+      const res = await axiosInstance.post(`/comments/${post._id}`, {
+        content: tempComment.content,
+      });
+
+      // Replace temp comment with actual saved comment
+      setComments((prev) =>
+        prev.map((c) => (c._id === tempComment._id ? res.data : c))
+      );
+    } catch (err) {
+      console.error("Failed to add comment", err);
+      // Revert on failure
+      setComments((prev) => prev.filter((c) => c._id !== tempComment._id));
+      alert("Failed to add comment!");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ✅ Edit Comment
+  // ✅ Edit Comment (Optimistic)
   const handleEdit = async (commentId) => {
-    if (!editContent.trim()) return;
-    await axiosInstance.put(`/comments/${commentId}`, { content: editContent });
+    if (!editContent.trim() || loading) return;
+    setLoading(true);
+
+    const oldComments = [...comments];
+    setComments((prev) =>
+      prev.map((c) =>
+        c._id === commentId ? { ...c, content: editContent } : c
+      )
+    );
     setEditCommentId(null);
     setEditContent("");
-    fetchPosts();
+
+    try {
+      await axiosInstance.put(`/comments/${commentId}`, {
+        content: editContent,
+      });
+    } catch (err) {
+      console.error("Failed to edit comment", err);
+      setComments(oldComments); // revert on failure
+      alert("Failed to edit comment!");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ✅ Delete Comment
+  // ✅ Delete Comment (Optimistic)
   const handleDelete = async (commentId) => {
-    if (window.confirm("Are you sure you want to delete this comment?")) {
+    if (!window.confirm("Are you sure you want to delete this comment?"))
+      return;
+
+    const oldComments = [...comments];
+    setComments((prev) => prev.filter((c) => c._id !== commentId));
+
+    try {
       await axiosInstance.delete(`/comments/${commentId}`);
-      fetchPosts();
+    } catch (err) {
+      console.error("Failed to delete comment", err);
+      setComments(oldComments); // revert on failure
+      alert("Failed to delete comment!");
     }
   };
 
@@ -45,7 +100,7 @@ export default function CommentSection({ post, fetchPosts, currentUser }) {
     <div className="mt-4 border-t border-gray-200 pt-3">
       {/* ✅ Comments List */}
       <div className="space-y-3 max-h-60 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-300">
-        {post.comments.map((c) => (
+        {comments.map((c) => (
           <div key={c._id} className="flex items-start gap-2">
             {/* ✅ Avatar */}
             {c.author.profilePic ? (
@@ -71,7 +126,8 @@ export default function CommentSection({ post, fetchPosts, currentUser }) {
                   />
                   <button
                     onClick={() => handleEdit(c._id)}
-                    className="px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
+                    disabled={loading}
+                    className="px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
                   >
                     Save
                   </button>
@@ -123,7 +179,7 @@ export default function CommentSection({ post, fetchPosts, currentUser }) {
           </div>
         ))}
 
-        {post.comments.length === 0 && (
+        {comments.length === 0 && (
           <p className="text-gray-400 text-sm text-center">
             No comments yet. Be the first!
           </p>
@@ -152,7 +208,8 @@ export default function CommentSection({ post, fetchPosts, currentUser }) {
             />
             <button
               type="submit"
-              className="px-4 py-2 text-xs sm:text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center gap-1 transition"
+              disabled={loading}
+              className="px-4 py-2 text-xs sm:text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center gap-1 transition disabled:opacity-50"
             >
               Comment
             </button>

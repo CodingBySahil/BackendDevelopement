@@ -1,38 +1,82 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import PostCard from "../components/PostCard";
-import { FaImage, FaVideo, FaSmile, FaFemale, FaMale } from "react-icons/fa";
+import { FaImage, FaVideo, FaFemale, FaMale } from "react-icons/fa";
 
 export default function Feed({ user }) {
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
   const [media, setMedia] = useState(null);
+  const [loading, setLoading] = useState(false);
 
+  // ✅ Fetch Posts (Shuffled Randomly Every Time)
   const fetchPosts = async () => {
-    const res = await axiosInstance.get("/posts");
-    setPosts(res.data);
+    try {
+      const res = await axiosInstance.get("/posts");
+      const shuffledPosts = res.data.sort(() => Math.random() - 0.5);
+      setPosts(shuffledPosts);
+    } catch (err) {
+      console.error("Error fetching posts:", err);
+    }
   };
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
+  // ✅ Handle Post Submit
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     if (!content.trim() && !media)
       return alert("Write something or add media!");
 
-    const formData = new FormData();
-    formData.append("content", content);
-    if (media) formData.append("media", media);
+    setLoading(true);
 
-    await axiosInstance.post("/posts", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    // ✅ Optimistic Post Creation (UI Updates Instantly)
+    const tempPost = {
+      _id: `temp-${Date.now()}`,
+      author: {
+        _id: user._id,
+        username: user.username,
+        profilePic: user.profilePic,
+        gender: user.gender,
+      },
+      content,
+      media: media ? URL.createObjectURL(media) : "",
+      mediaType: media
+        ? media.type.startsWith("video")
+          ? "video"
+          : "image"
+        : "none",
+      likes: [],
+      comments: [],
+      shares: 0,
+      createdAt: new Date().toISOString(),
+    };
 
+    setPosts((prev) => [tempPost, ...prev]);
     setContent("");
     setMedia(null);
-    fetchPosts();
+
+    try {
+      const formData = new FormData();
+      formData.append("content", tempPost.content);
+      if (media) formData.append("media", media);
+
+      const { data } = await axiosInstance.post("/posts", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      // ✅ Replace temp post with real post from server
+      setPosts((prev) => prev.map((p) => (p._id === tempPost._id ? data : p)));
+    } catch (err) {
+      console.error("Failed to create post", err);
+      // ❌ Remove temp post if failed
+      setPosts((prev) => prev.filter((p) => p._id !== tempPost._id));
+      alert("Failed to create post. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,6 +103,7 @@ export default function Feed({ user }) {
               placeholder={`What's on your mind, ${user.username}?`}
               className="w-full border rounded-lg p-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
               rows={2}
+              disabled={loading}
             />
             {media && (
               <div className="mt-2 relative">
@@ -93,9 +138,14 @@ export default function Feed({ user }) {
               </label>
               <button
                 type="submit"
-                className="px-4 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition"
+                disabled={loading}
+                className={`px-4 py-1 rounded-md text-sm transition ${
+                  loading
+                    ? "bg-gray-400 text-white cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                }`}
               >
-                Post
+                {loading ? "Posting..." : "Post"}
               </button>
             </div>
           </form>
@@ -110,7 +160,7 @@ export default function Feed({ user }) {
           <PostCard
             key={post._id}
             post={post}
-            fetchPosts={fetchPosts}
+            fetchPosts={fetchPosts} // kept for likes/comments refresh
             user={user}
           />
         ))
