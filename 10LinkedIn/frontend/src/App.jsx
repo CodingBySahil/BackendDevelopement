@@ -1,12 +1,19 @@
-import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import { AuthProvider } from "./context/AuthContext";
+import Signup from "./pages/SignUp";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
-    <div className="flex justify-center items-center h-screen w-screen">
-      <h1 class="text-3xl font-bold  bg-purple-800 text-white px-6 py-3 rounded-full">
-        This will be the frontend of linkedin everthing is ready
-      </h1>
-    </div>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 
