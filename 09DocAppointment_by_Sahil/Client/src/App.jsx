@@ -1,7 +1,30 @@
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import About from "./pages/About";
+import Doctors from "./pages/Doctors";
+import Contact from "./pages/Contact";
+import MyProfile from "./pages/MyProfile";
+import MyAppointments from "./pages/MyAppointments";
+import Appointment from "./pages/Appointment";
+import Navbar from "./components/Navbar";
+
 const App = () => {
   return (
-    <div className="bg-black text-5xl text-white p-8 text-center">
-      Doc Appointment by Sahil
+    <div className="">
+      <Navbar/>
+      
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/doctors" element={<Doctors />} />
+        <Route path="/doctors/:specialty" element={<Doctors />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/my-profile" element={<MyProfile />} />
+        <Route path="/my-appointments" element={<MyAppointments />} />
+        <Route path="/appointment/:docId" element={<Appointment />} />
+      </Routes>
     </div>
   );
 };
