@@ -4,15 +4,17 @@ const userSchema = mongoose.Schema(
     firstName: {
       type: String,
       require: true,
+
     },
     lastName: {
       type: String,
       require: true,
     },
-    username: {
+    userName: {
       type: String,
       require: true,
       unique: true,
+      lowercase:true
     },
     email: {
       type: String,
