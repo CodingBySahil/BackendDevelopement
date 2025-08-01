@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import logo from "../../public/logo.svg";
+import { UserDataContext } from "../context/UserContext";
 
 const Signup = () => {
+  const { getCurrentUser } = useContext(UserDataContext);
   const { serverURL } = useAuthContext();
   const navigate = useNavigate();
 
@@ -46,6 +48,7 @@ const Signup = () => {
 
       toast.success("Signup successful!");
       resetForm();
+      await getCurrentUser(); // ✅ fetch and set user before navigating
       navigate("/");
     } catch (err) {
       const message = err.response?.data?.message || "Signup failed!";
