@@ -6,6 +6,7 @@ import axios from "axios";
 export const UserDataContext = createContext();
 
 const UserContextProvider = ({ children }) => {
+  const [editProfile, setEditProfile] = useState(false);
   const [userData, setUserData] = useState(null);
   const serverURL = useAuthContext();
 
@@ -27,9 +28,16 @@ const UserContextProvider = ({ children }) => {
   useEffect(() => {
     getCurrentUser();
   }, []);
+  const value = {
+    userData,
+    setUserData,
+    getCurrentUser,
+    editProfile,
+    setEditProfile,
+  };
 
   return (
-    <UserDataContext.Provider value={{ userData, setUserData, getCurrentUser }}>
+    <UserDataContext.Provider value={value}>
       {children}
     </UserDataContext.Provider>
   );
