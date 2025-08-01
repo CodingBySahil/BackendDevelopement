@@ -10,9 +10,10 @@ import Signup from "./pages/SignUp";
 import Login from "./pages/Login";
 import HomePage from "./pages/HomePage";
 import { useContext } from "react";
+import { Toaster } from "react-hot-toast";
 
 const AppRoutes = () => {
-  let { userData } = useContext(UserDataContext);
+  const { userData } = useContext(UserDataContext);
 
   return (
     <Routes>
@@ -34,13 +35,17 @@ const AppRoutes = () => {
 
 const App = () => {
   return (
-    <AuthProvider>
-      <UserContextProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
-      </UserContextProvider>
-    </AuthProvider>
+    <>
+      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+
+      <AuthProvider>
+        <UserContextProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
+        </UserContextProvider>
+      </AuthProvider>
+    </>
   );
 };
 

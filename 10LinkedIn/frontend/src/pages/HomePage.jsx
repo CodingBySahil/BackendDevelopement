@@ -1,4 +1,5 @@
 import axios from "axios";
+import Navbar from "../components/Navbar";
 
 const HomePage = () => {
   const handleLogout = async () => {
@@ -15,7 +16,9 @@ const HomePage = () => {
   };
 
   return (
-    <div>
+    <div className="w-full min-h-[100vh] bg-[#f0efe7]">
+      <Navbar />
+
       <h1>This is the home page I will design</h1>
       <button className="cursor-pointer hover:text-2xl" onClick={handleLogout}>
         Logout
