@@ -4,13 +4,14 @@ import { createContext, useContext, useMemo } from "react";
 const AuthContext = createContext();
 
 // Custom hook
+
 export const useAuthContext = () => useContext(AuthContext);
 
 // Provider component
 export const AuthProvider = ({ children }) => {
   const value = useMemo(
     () => ({
-      serverURL: "http://localhost:8127", // or import.meta.env.VITE_SERVER_URL
+      serverURL: "http://localhost:8127",
     }),
     []
   );

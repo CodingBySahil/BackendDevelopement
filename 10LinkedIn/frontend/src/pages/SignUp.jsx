@@ -46,7 +46,7 @@ const Signup = () => {
 
       toast.success("Signup successful!");
       resetForm();
-      navigate("/login");
+      navigate("/");
     } catch (err) {
       const message = err.response?.data?.message || "Signup failed!";
       toast.error(message);
