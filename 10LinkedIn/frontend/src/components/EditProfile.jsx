@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { UserDataContext } from "../context/UserContext";
 import emptyDp from "../assets/emptyDp.jpg";
@@ -30,6 +30,17 @@ const EditProfile = () => {
     description: "",
   });
 
+  // profile and cover image
+  const profileImage = useRef();
+  const coverImage = useRef();
+  const [frontendProfileImage, SetFrontendProfileImage] = useState(
+    userData.profileImage || emptyDp
+  );
+  const [backendProfileImage, SetBackendProfileImage] = useState(null);
+  const [frontendCoverImage, SetFrontendCoverImage] = useState(
+    null
+  );
+  const [backendCoverImage, SetBackendCoverImage] = useState(null);
   //   function for add a skill
   function addSkill() {
     if (newSkill && !skills.includes(newSkill)) {
@@ -88,9 +99,24 @@ const EditProfile = () => {
       setExperience(experience.filter((ex) => ex !== exp));
     }
   }
+
+  // function for profile image
+  function handleProfileImage(e) {
+    let file=e.target.files[0]
+    SetBackendProfileImage(file)
+    SetFrontendProfileImage(URL.createObjectURL(file))
+  }
+  // function for cover image
+  function handleCoverImage(e) {
+    let file=e.target.files[0];
+    SetBackendCoverImage(file)
+    SetFrontendCoverImage(URL.createObjectURL(file))
+  }
   return (
     <div className="w-full h-[100vh] fixed top-0 z-[100] flex justify-center items-center">
       <div className="w-full h-full bg-black opacity-[0.5] absolute"></div>
+      <input type="file" accept="image/*" hidden ref={profileImage} onChange={handleProfileImage}/>
+      <input type="file" accept="image/*" hidden ref={coverImage} onChange={handleCoverImage}/>
       <div className="w-[90%] max-w-[500px] h-[600px] bg-white absolute z-[200] overflow-auto shadow-lg rounded-lg p-[7px]">
         <div className="absolute top-[8px] right-[8px] ">
           <RxCross2
@@ -99,17 +125,17 @@ const EditProfile = () => {
           />
         </div>
         <div className="w-full h-[150px] bg-gray-500  rounded-lg mt-[40px]">
-          <img src="img" alt="" />
+          <img src={frontendCoverImage} alt="" className="w-full h-full" />
           <FiCamera
             className="absolute  right-[20px] top-[55px] w-[25px] h-[25px] text-gray-800 cursor-pointer"
-            onClick={() => setEditProfile(true)}
+            onClick={() => coverImage.current.click()}
           />
         </div>
         <div className="w-[80px] h-[80px] rounded-full overflow-hidden items-center justify-center absolute top-[150px] left-[30px] ">
-          <img src={emptyDp} alt="" className="h-full" />
+          <img src={frontendProfileImage} alt="" className="h-full" />
         </div>
         <div className="w-[18px] h-[18px] bg-[#17c1ff] absolute  top-[200px] left-[85px] flex justify-center items-center rounded-full cursor-pointer">
-          <FiPlus onClick={() => setEditProfile(true)} />
+          <FiPlus onClick={() => profileImage.current.click()} />
         </div>
         {/* form div */}
         <div className="w-full flex flex-col items-center justify-center gap-[20px] mt-[50px]">

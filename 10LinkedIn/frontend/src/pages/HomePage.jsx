@@ -16,13 +16,16 @@ const HomePage = () => {
       <div className="relative w-full lg:w-[25%] min-h-[200px] bg-white shadow-lg rounded-lg">
         <div className="w-[100%] h-[100px] bg-gray-400 rounded overflow-hidden flex items-center justify-center">
           <img src={"emptyDp"} alt="" className="w-full" />
-          <FiCamera className="absolute right-[10px] top-[10px] w-[25px] h-[25px] text-gray-800 cursor-pointer" onClick={()=>setEditProfile(true)}/>
+          <FiCamera
+            className="absolute right-[10px] top-[10px] w-[25px] h-[25px] text-gray-800 cursor-pointer"
+            onClick={() => setEditProfile(true)}
+          />
         </div>
         <div className="w-[70px] h-[70px] rounded-full overflow-hidden items-center justify-center absolute top-[60px] left-[30px] ">
           <img src={emptyDp} alt="" className="h-full" />
         </div>
         <div className="w-[18px] h-[18px] bg-[#17c1ff] absolute top-[102px] left-[74px] flex justify-center items-center rounded-full cursor-pointer">
-          <FiPlus onClick={()=>setEditProfile(true)}/>
+          <FiPlus onClick={() => setEditProfile(true)} />
         </div>
 
         <div className="mt-[30px] pl-[10px]">
@@ -32,7 +35,7 @@ const HomePage = () => {
             {userData.headline || ""}
           </div>
           <button
-            onClick={()=>setEditProfile(true)}
+            onClick={() => setEditProfile(true)}
             className=" w-[98%] text-[#2dc0ff] border border-[#2dc0ff] px-4 py-2 rounded-full font-medium hover:bg-blue-50 transition text-sm my-5 flex items-center justify-center gap-[12px] cursor-pointer"
           >
             Edit Profile <FaPen />
