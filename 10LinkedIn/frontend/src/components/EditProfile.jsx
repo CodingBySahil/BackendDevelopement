@@ -60,7 +60,7 @@ const EditProfile = () => {
     }
   }
   //   function for add education
-  function addEducation() {
+  function addEducation() { 
     if (
       newEducation.college &&
       newEducation.degree &&
