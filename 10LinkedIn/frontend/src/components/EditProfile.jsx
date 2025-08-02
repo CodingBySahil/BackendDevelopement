@@ -60,7 +60,7 @@ const EditProfile = () => {
     }
   }
   //   function for add education
-  function addEducation() { 
+  function addEducation() {
     if (
       newEducation.college &&
       newEducation.degree &&
@@ -153,7 +153,7 @@ const EditProfile = () => {
   };
   return (
     <div className="w-full h-[100vh] fixed top-0 z-[100] flex justify-center items-center">
-      <div className="w-full h-full bg-black opacity-[0.5] absolute"></div>
+      <div className="w-full h-full bg-black opacity-[0.5] absolute top-0 left-0 right-0"></div>
       <input
         type="file"
         accept="image/*"
