@@ -55,6 +55,7 @@ const UserContextProvider = ({ children }) => {
     setEditProfile,
     allPostsData,
     setAllPostsData,
+    getAllPosts,
   };
 
   return (
