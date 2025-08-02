@@ -32,3 +32,24 @@ export const createPost = async (req, res) => {
     });
   }
 };
+
+// controller for getting all posts
+export const getALlPosts = async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .populate("author", "firstName lastName profileImage headline")
+      .sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      message: "Posts fetched successfully",
+      posts,
+    });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch posts",
+      error: error.message,
+    });
+  }
+};
