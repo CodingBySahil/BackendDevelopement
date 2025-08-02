@@ -3,15 +3,19 @@ import { RxCross2 } from "react-icons/rx";
 import { UserDataContext } from "../context/UserContext";
 import emptyDp from "../assets/emptyDp.jpg";
 import { FiCamera, FiPlus } from "react-icons/fi";
+import axios from "axios";
+import { useAuthContext } from "../context/AuthContext";
 
 const EditProfile = () => {
-  const { userData, setEditProfile } = useContext(UserDataContext);
+  const { serverURL } = useAuthContext();
+  const [saving, setSaving] = useState(false);
+  const { userData, setUserData, setEditProfile } = useContext(UserDataContext);
   const [firstName, setFirstName] = useState(userData?.firstName || "");
   const [lastName, setLastName] = useState(userData?.lastName || "");
   const [userName, setUserName] = useState(userData?.userName || "");
   const [headline, setHeadline] = useState(userData?.headline || "");
   const [gender, setGender] = useState(userData?.gender || "");
-  const [address, setAddress] = useState(userData?.location || "");
+  const [location, setLocation] = useState(userData?.location || "");
   //   for skills
   const [skills, setSkills] = useState(userData?.skills || []);
   const [newSkill, setNewSkill] = useState("");
@@ -37,9 +41,7 @@ const EditProfile = () => {
     userData.profileImage || emptyDp
   );
   const [backendProfileImage, SetBackendProfileImage] = useState(null);
-  const [frontendCoverImage, SetFrontendCoverImage] = useState(
-    null
-  );
+  const [frontendCoverImage, SetFrontendCoverImage] = useState(null);
   const [backendCoverImage, SetBackendCoverImage] = useState(null);
   //   function for add a skill
   function addSkill() {
@@ -102,21 +104,68 @@ const EditProfile = () => {
 
   // function for profile image
   function handleProfileImage(e) {
-    let file=e.target.files[0]
-    SetBackendProfileImage(file)
-    SetFrontendProfileImage(URL.createObjectURL(file))
+    let file = e.target.files[0];
+    SetBackendProfileImage(file);
+    SetFrontendProfileImage(URL.createObjectURL(file));
   }
   // function for cover image
   function handleCoverImage(e) {
-    let file=e.target.files[0];
-    SetBackendCoverImage(file)
-    SetFrontendCoverImage(URL.createObjectURL(file))
+    let file = e.target.files[0];
+    SetBackendCoverImage(file);
+    SetFrontendCoverImage(URL.createObjectURL(file));
   }
+
+  const handleUpdateProfile = async () => {
+    try {
+      setSaving(true);
+      let formData = new FormData();
+      formData.append("fisrtName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("userName", userName);
+      formData.append("headline", headline);
+      formData.append("location", location);
+      formData.append("gender", gender);
+      formData.append("skills", JSON.stringify(skills));
+      formData.append("education", JSON.stringify(education));
+      formData.append("experience", JSON.stringify(experience));
+      if (backendProfileImage) {
+        formData.append("profileImage", backendProfileImage);
+      }
+      if (backendCoverImage) {
+        formData.append("coverImage", backendCoverImage);
+      }
+
+      let result = await axios.put(
+        `${serverURL}/api/user/update-profile`,
+        formData,
+        { withCredentials: true }
+      );
+      console.log(result);
+      setUserData(result.data);
+      setSaving(false);
+      setEditProfile(false);
+    } catch (error) {
+      console.log(error);
+      setSaving(false);
+    }
+  };
   return (
     <div className="w-full h-[100vh] fixed top-0 z-[100] flex justify-center items-center">
       <div className="w-full h-full bg-black opacity-[0.5] absolute"></div>
-      <input type="file" accept="image/*" hidden ref={profileImage} onChange={handleProfileImage}/>
-      <input type="file" accept="image/*" hidden ref={coverImage} onChange={handleCoverImage}/>
+      <input
+        type="file"
+        accept="image/*"
+        hidden
+        ref={profileImage}
+        onChange={handleProfileImage}
+      />
+      <input
+        type="file"
+        accept="image/*"
+        hidden
+        ref={coverImage}
+        onChange={handleCoverImage}
+      />
       <div className="w-[90%] max-w-[500px] h-[600px] bg-white absolute z-[200] overflow-auto shadow-lg rounded-lg p-[7px]">
         <div className="absolute top-[8px] right-[8px] ">
           <RxCross2
@@ -171,8 +220,8 @@ const EditProfile = () => {
             type="text"
             placeholder="Address"
             className="w-full h-[50px] outline-none border-gray-600 px-[10px] py-[5px] text-[18px] border-2 rounded-lg"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
           />
           {/* dropdown for gender male female other           */}
           <select
@@ -365,8 +414,12 @@ const EditProfile = () => {
           </div>
 
           {/* final save button */}
-          <button className="w-full h-[50px] bg-[#17c1ff] text-white text-[18px] rounded-lg">
-            Save
+          <button
+            className="w-full h-[50px] bg-[#17c1ff] text-white text-[18px] rounded-lg cursor-pointer"
+            disabled={saving}
+            onClick={handleUpdateProfile}
+          >
+            {saving ? "Saving..." : "Save Profile"}
           </button>
         </div>
       </div>
