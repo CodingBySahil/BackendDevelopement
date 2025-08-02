@@ -41,7 +41,9 @@ const EditProfile = () => {
     userData.profileImage || emptyDp
   );
   const [backendProfileImage, SetBackendProfileImage] = useState(null);
-  const [frontendCoverImage, SetFrontendCoverImage] = useState(null);
+  const [frontendCoverImage, SetFrontendCoverImage] = useState(
+    userData.coverImage || null
+  );
   const [backendCoverImage, SetBackendCoverImage] = useState(null);
   //   function for add a skill
   function addSkill() {
