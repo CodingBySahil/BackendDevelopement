@@ -76,7 +76,7 @@ const Navbar = () => {
         {/* Profile Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <img
-            src={emptyDp}
+            src={userData.profileImage || emptyDp}
             alt="Profile"
             className="w-8 h-8 rounded-full object-cover border border-gray-300 cursor-pointer"
             onClick={() => setShowDropdown(!showDropdown)}
@@ -87,7 +87,7 @@ const Navbar = () => {
               {/* Profile Section */}
               <div className="flex flex-col items-center justify-center">
                 <img
-                  src={emptyDp}
+                  src={userData.profileImage || emptyDp}
                   alt="Profile"
                   className="w-16 h-16 rounded-full object-cover border border-gray-300 mb-3"
                 />
