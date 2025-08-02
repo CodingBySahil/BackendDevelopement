@@ -6,7 +6,6 @@ import isAuth from "../middlewares/isAuth.js";
 // Define the post routes
 const postRoutes = express.Router();
 
-
 // Route for creating a post
-postRoutes.post("/create-post",isAuth,upload.single('image'), createPost);
+postRoutes.post("/create-post", isAuth, upload.single("image"), createPost);
 export default postRoutes;
