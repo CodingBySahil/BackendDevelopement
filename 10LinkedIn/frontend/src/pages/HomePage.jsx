@@ -15,11 +15,7 @@ const HomePage = () => {
 
       <div className="relative w-full lg:w-[25%] min-h-[200px] bg-white shadow-lg rounded-lg">
         <div className="w-[100%] h-[100px] bg-gray-400 rounded overflow-hidden flex items-center justify-center">
-          <img
-            src={userData.coverImage || ""}
-            alt=""
-            className="w-full"
-          />
+          <img src={userData.coverImage || ""} alt="" className="w-full" />
           <FiCamera
             className="absolute right-[10px] top-[10px] w-[25px] h-[25px] text-gray-800 cursor-pointer"
             onClick={() => setEditProfile(true)}
