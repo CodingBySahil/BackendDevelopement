@@ -53,3 +53,68 @@ export const getALlPosts = async (req, res) => {
     });
   }
 };
+
+// controller for like the posts
+export const likePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.userId;
+
+    const post = await Post.findById(postId); // ✅ FIXED
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // ✅ Toggle like
+    if (post.like.includes(userId)) {
+      // Already liked → unlike
+      post.like = post.like.filter((id) => id != userId);
+    } else {
+      // Not liked → like it
+      post.like.push(userId);
+    }
+
+    await post.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Post like updated",
+      like: post.like,
+    });
+  } catch (error) {
+    console.error("Error liking post:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to like post",
+      error: error.message,
+    });
+  }
+};
+
+// controller for comment the posts
+export const commentOnPost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.userId;
+    const { content } = req.body;
+    const post = await Post.findByIdAndUpdate(
+      postId,
+      { $push: { comment: { content, user: userId } } },
+      { new: true }
+    ).populate("comment.user", "firstName lastName profileImage headline");
+
+    return res.status(200).json({
+      success: true,
+      message: "Comment added successfully",
+      post,
+    });
+  } catch (error) {
+    console.error("Error commenting on post:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to comment on post",
+      error: error.message,
+    });
+  }
+};
