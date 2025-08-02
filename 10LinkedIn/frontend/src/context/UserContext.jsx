@@ -9,6 +9,7 @@ const UserContextProvider = ({ children }) => {
   const [editProfile, setEditProfile] = useState(false);
   const [userData, setUserData] = useState(null);
   const serverURL = useAuthContext();
+  const [allPostsData, setAllPostsData] = useState([]);
 
   const getCurrentUser = async () => {
     try {
@@ -18,6 +19,8 @@ const UserContextProvider = ({ children }) => {
           withCredentials: true,
         }
       );
+      console.log(res.data.user);
+
       setUserData(res.data.user);
     } catch (error) {
       console.log("current user error:", error.message);
@@ -25,8 +28,24 @@ const UserContextProvider = ({ children }) => {
     }
   };
 
+  const getAllPosts = async () => {
+    try {
+      const res = await axios.get(
+        `${serverURL.serverURL}/api/post/get-all-posts`,
+        {
+          withCredentials: true,
+        }
+      );
+      setAllPostsData(res.data.posts);
+      return res.data.posts;
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      return [];
+    }
+  };
   useEffect(() => {
     getCurrentUser();
+    getAllPosts();
   }, []);
   const value = {
     userData,
@@ -34,6 +53,8 @@ const UserContextProvider = ({ children }) => {
     getCurrentUser,
     editProfile,
     setEditProfile,
+    allPostsData,
+    setAllPostsData,
   };
 
   return (

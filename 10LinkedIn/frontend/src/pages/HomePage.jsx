@@ -11,8 +11,10 @@ import { useState } from "react";
 import { useRef } from "react";
 import axios from "axios";
 import { useAuthContext } from "../context/AuthContext";
+import Posts from "../components/Posts";
 const HomePage = () => {
-  const { userData, editProfile, setEditProfile } = useContext(UserDataContext);
+  const { userData, editProfile, setEditProfile, allPostsData } =
+    useContext(UserDataContext);
   const { serverURL } = useAuthContext();
   const [frontendPostImage, setFrontendPostImage] = useState("");
   const [backendPostImage, setBackendPostImage] = useState("");
@@ -52,7 +54,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="w-full min-h-[100vh] bg-[#f0efe7] pt-[80px] flex items-center lg:items-start justify-center gap-[20px] px-[20px] flex-col lg:flex-row relative">
+    <div className="w-full min-h-[100vh] bg-[#f0efe7] pt-[80px] flex items-center lg:items-start justify-center gap-[20px] px-[20px] flex-col lg:flex-row relative pb-[50px]">
       {editProfile && <EditProfile />}
       <Navbar />
 
@@ -157,7 +159,7 @@ const HomePage = () => {
       )}
 
       {/* #############Post show Section started here############ */}
-      <section className="w-full lg:w-[50%] min-h-[200px] bg-[#f0efe7] ">
+      <section className="w-full lg:w-[50%] min-h-[200px] bg-[#f0efe7] flex flex-col gap-[20px] ">
         <div className="w-full h-[120px] bg-white shadow-lg rounded-lg flex items-center justify-center gap-[10px]">
           <div className="w-[70px] h-[70px] rounded-full overflow-hidden flex items-center justify-center cursor-pointer">
             <img
@@ -173,6 +175,18 @@ const HomePage = () => {
             Create a Post
           </button>
         </div>
+        {allPostsData.map((eachPost, index) => (
+          <Posts
+            key={index}
+            id={eachPost._id}
+            description={eachPost.description}
+            author={eachPost.author}
+            image={eachPost.image}
+            like={eachPost.like}
+            comment={eachPost.comment}
+            createdAt={eachPost.createdAt}
+          />
+        ))}
       </section>
 
       {/*############## last section ###############*/}
